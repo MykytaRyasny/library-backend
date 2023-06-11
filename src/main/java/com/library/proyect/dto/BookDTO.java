@@ -1,13 +1,11 @@
 package com.library.proyect.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-@Getter
-@Setter
-public class BookDTO {
+public class BookDTO implements Serializable {
 
     private String isbn;
 
@@ -16,4 +14,38 @@ public class BookDTO {
     private Date releaseDate;
 
     private String autor;
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
 }

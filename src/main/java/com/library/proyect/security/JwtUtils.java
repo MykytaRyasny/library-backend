@@ -1,15 +1,12 @@
 package com.library.proyect.security;
 
-import com.library.proyect.model.EmployeeEntity;
 import io.jsonwebtoken.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
 
 import java.util.Date;
 
@@ -28,24 +25,12 @@ public class JwtUtils {
 
 
     public String getJwtFromCookies(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-        if (cookie != null) {
-            return cookie.getValue();
-        } else {
+        if (request.getHeader("x-auth-token") == null) {
             return null;
         }
+        return request.getHeader("x-auth-token").split(";")[0].split("=")[1];
     }
 
-    public ResponseCookie generateJwtCookie(EmployeeEntity userPrincipal) {
-        String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/").maxAge(30000).httpOnly(true).build();
-        return cookie;
-    }
-
-    public ResponseCookie getCleanJwtCookie() {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/api").build();
-        return cookie;
-    }
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
