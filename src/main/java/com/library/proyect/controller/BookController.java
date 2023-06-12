@@ -25,6 +25,22 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @GetMapping(value = "/find/{isbn}")
+    @PreAuthorize("hasAnyRole('ROLE_admin', 'ROLE_shop_vendor', 'ROLE_shop_manager')")
+    public ResponseEntity<BookDTO> getEmployeeById(@PathVariable(value = "isbn") String isbn, final Principal user) {
+        try {
+            BookDTO employeeDTO = bookService.getByISBN(isbn);
+            String methodName = new Object() {
+            }.getClass().getEnclosingMethod().getName();
+            String className = new Object() {
+            }.getClass().getEnclosingClass().getName();
+            LoggerUtils.LoggerInfo(methodName, className);
+            return new ResponseEntity<>(employeeDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_admin', 'ROLE_shop_vendor', 'ROLE_shop_manager')")
     @GetMapping("/all")
     public ResponseEntity<List<BookDTO>> getAllBooks(Principal principal) {
